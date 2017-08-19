@@ -3,6 +3,13 @@ import { Linking } from 'react-native';
 import { Card, CardItem, Text, View, Container, Header, Content, Title, Button,Left, Right, Body, Icon } from 'native-base';
 import { Actions as NavigationActions } from 'react-native-router-flux';
 import styles from '../Styles/FetchListStyles';
+import { connect } from 'react-redux';
+import {
+  fetchDataFasksesRsUmum,
+  fetchDataFasksesRsKhusus,
+  fetchDataFasksesPuskesmas,
+  resetState
+} from '../Actions/faskes';
 import API from '../Config/Api';
 
 class FetchList extends React.Component {
@@ -25,41 +32,17 @@ class FetchList extends React.Component {
         case 'rsumum':
           title = 'Rumah Sakit Umum';
           bgHeader = '#02C39A';
-          this.api.fetchUmum().then((result) => {
-            this.setState({
-              fetchData: result.data,
-              open: true
-            });
-            console.tron.log(result.data);
-          }).catch((err) => {
-            console.tron.log(err);
-          });
+          this.props.getFaskesUmum();
           break;
         case 'rskhusus':
           title = 'Rumah Sakit Khusus';
           bgHeader = '#02C39A';
-          this.api.fetchKhusus().then((result) => {
-            this.setState({
-              fetchData: result.data,
-              open: true
-            });
-            console.tron.log(result.data);
-          }).catch((err) => {
-            console.tron.log(err);
-          });
+          this.props.getFaskesKhusus();
           break;
         case 'puskesmas':
           title = 'Puskesmas';
           bgHeader = '#00A896';
-          this.api.fetchPuskesmas().then((result) => {
-            this.setState({
-              fetchData: result.data,
-              open: true
-            });
-            console.tron.log(result.data);
-          }).catch((err) => {
-            console.tron.log(err);
-          });
+          this.props.getFaskesPuskesmas();
           break;
       }
 
@@ -71,8 +54,8 @@ class FetchList extends React.Component {
   }
 
   loadContent() {
-    if (this.state.open) {
-      return this.state.fetchData.data.map((result) => {
+    if (this.props.faskes.open) {
+      return this.props.faskes.dataFaskes.data.map((result) => {
         let longlat = result.location.latitude + ',' + result.location.longitude;
         return (
           <Card key={result.id} style={{ flex: 0 }}>
@@ -123,12 +106,14 @@ class FetchList extends React.Component {
   }
 
   render() {
-    console.tron.log(this.state);
     return (
       <Container >
         <Header style={{ backgroundColor: this.state.bgHeader }}>
           <Left>
-            <Button transparent onPress={() => NavigationActions.home()}>
+            <Button transparent onPress={() => {
+              this.props.faskesReset();              
+              NavigationActions.home();
+            }}>
               <Icon name='arrow-back' />
             </Button>
           </Left>
@@ -146,4 +131,18 @@ class FetchList extends React.Component {
   }
 }
 
-export default FetchList;
+const mapStateToProps = store => {
+  return store;
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getFaskesUmum: () => dispatch(fetchDataFasksesRsUmum()),
+    getFaskesKhusus: () => dispatch(fetchDataFasksesRsKhusus()),
+    getFaskesPuskesmas: () => dispatch(fetchDataFasksesPuskesmas()),
+    faskesReset: () => dispatch(resetState()) 
+  };
+};
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(FetchList);
