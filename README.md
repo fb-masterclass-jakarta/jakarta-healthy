@@ -1,12 +1,14 @@
 # react-native-starter-basic
-is boilerplate react-native (android) without state management, config API in **App/Config/Api.js**
+is boilerplate react-native (android) with redux state management, 
+config API in **App/Config/Api.js**
 
 <table>
   <tr>
-    <td><img src="https://image.ibb.co/hg6szv/home.png" width="300px"></td>
-    <td><img src="https://image.ibb.co/b2vwRa/rsu.png" width="300px"></td>
-    <td><img src="https://image.ibb.co/cAp1sF/rsk.png" width="300px"></td>
-    <td><img src="https://image.ibb.co/daHnXF/puskesmas.png" width="300px"></td>
+    <td><img src="https://image.ibb.co/hg6szv/home.png" width="200px"></td>
+    <td><img src="https://image.ibb.co/b2vwRa/rsu.png" width="200px"></td>
+    <td><img src="https://image.ibb.co/cAp1sF/rsk.png" width="200px"></td>
+    <td><img src="https://image.ibb.co/daHnXF/puskesmas.png" width="200px"></td>
+    <td><img src="https://image.ibb.co/gqA3xQ/mapsexample.png" width="200px"></a></td>
   </tr>
 </table>
 
