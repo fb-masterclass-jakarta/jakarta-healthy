@@ -1,6 +1,6 @@
 import React from 'react';
 import { ListView } from 'react-native';
-import { Text, View, Container, Header, Content, Title, Button,Left, Right, Body, Icon } from 'native-base';
+import { Container, Content } from 'native-base';
 import { Actions as NavigationActions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import {
@@ -9,8 +9,10 @@ import {
   fetchDataFasksesPuskesmas,
   resetState
 } from '../Actions/faskes';
+import Spinner from 'react-native-loading-spinner-overlay';
 import CardFaskes from '../Components/CardFaskes';
 import API from '../Config/Api';
+
 
 
 class FetchList extends React.Component {
@@ -20,41 +22,27 @@ class FetchList extends React.Component {
     this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      title: '',
-      fetchData: [],
-      bgHeader: '#028090',
-      open: false
+      })
     };
     this.api = API.create();
   }
 
   componentWillMount() {
-    let title;
-    let bgHeader;
     if (this.props.paramKey) {
       switch (this.props.paramKey) {
         case 'rsumum':
-          title = 'Rumah Sakit Umum';
-          bgHeader = '#02C39A';
+          NavigationActions.refresh({ title: 'Rumah Sakit Umum' });
           this.props.getFaskesUmum();
           break;
         case 'rskhusus':
-          title = 'Rumah Sakit Khusus';
-          bgHeader = '#02C39A';
+          NavigationActions.refresh({ title: 'Rumah Sakit Khusus' });
           this.props.getFaskesKhusus();
           break;
         case 'puskesmas':
-          title = 'Puskesmas';
-          bgHeader = '#00A896';
+          NavigationActions.refresh({ title: 'Puskesmas' });
           this.props.getFaskesPuskesmas();
           break;
       }
-
-      this.setState({
-        title: title,
-        bgHeader: bgHeader
-      });
     }
   }
 
@@ -66,35 +54,16 @@ class FetchList extends React.Component {
     }
   }
 
-  backToDashboard(){
+
+  componentWillUnmount(){
     this.props.faskesReset();
-    NavigationActions.home();
   }
 
   render() {
     return (
       <Container >
-        <Header style={{ backgroundColor: this.state.bgHeader }}>
-          <Left>
-            <Button transparent onPress={() => this.backToDashboard() }>
-              <Icon name='arrow-back' />
-            </Button>
-          </Left>
-          <Body style={{ flex: 3 }}>
-            <Title>{this.state.title}</Title>
-          </Body>
-          <Right />
-        </Header>
-
+        <Spinner visible={this.props.general.loadingScreen} textStyle={{ color: '#FFF' }} />
         <Content padder>
-          {
-            !this.props.faskes.open &&
-            <View style={{
-              alignItems: 'center'
-            }}>
-              <Text>Loading...</Text>
-            </View>
-          }
           <ListView
             dataSource={this.state.dataSource}
             renderRow={(rowData)=><CardFaskes result={rowData} />}

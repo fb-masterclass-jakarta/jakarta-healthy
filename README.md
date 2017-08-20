@@ -17,6 +17,7 @@ config API in **App/Config/Api.js**
 - <a href="https://github.com/GeekyAnts/NativeBase">NativeBase</a>
 - <a href="https://github.com/mzabriskie/axios">axios</a>
 - <a href="https://github.com/aksonov/react-native-router-flux">react-native-router-flux</a>
+- <a href="https://github.com/joinspontaneous/react-native-loading-spinner-overlay">react-native-loading-spinner-overlay</a>
 - <a href="https://github.com/infinitered/reactotron">reactotron</a>
 - <a href="https://github.com/reactjs/redux">redux</a>
 - <a href="https://github.com/reactjs/react-redux">react-redux</a>

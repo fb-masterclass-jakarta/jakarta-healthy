@@ -7,9 +7,9 @@ class NavigationRouter extends Component {
   render() {
     return (
       <Router>
-        <Scene key='root' hideNavBar>
-          <Scene key='fetchlist' component={FetchList} />
-          <Scene initial key='home' component={MainScreen} />
+        <Scene key='root' navigationBarStyle={{ backgroundColor: '#02C39A' }} headerTintColor='#FFF' titleStyle={{ color: '#FFF' }}>
+          <Scene key='fetchlist' component={FetchList} title='Loading...' />
+          <Scene initial key='home' component={MainScreen} hideNavBar />
         </Scene>
       </Router>
     );
