@@ -1,8 +1,7 @@
 import React from 'react';
-import { Linking } from 'react-native';
-import { Card, CardItem, Text, View, Container, Header, Content, Title, Button,Left, Right, Body, Icon } from 'native-base';
+import { ListView } from 'react-native';
+import { Text, View, Container, Header, Content, Title, Button,Left, Right, Body, Icon } from 'native-base';
 import { Actions as NavigationActions } from 'react-native-router-flux';
-import styles from '../Styles/FetchListStyles';
 import { connect } from 'react-redux';
 import {
   fetchDataFasksesRsUmum,
@@ -10,12 +9,18 @@ import {
   fetchDataFasksesPuskesmas,
   resetState
 } from '../Actions/faskes';
+import CardFaskes from '../Components/CardFaskes';
 import API from '../Config/Api';
+
 
 class FetchList extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
       title: '',
       fetchData: [],
       bgHeader: '#028090',
@@ -53,56 +58,17 @@ class FetchList extends React.Component {
     }
   }
 
-  loadContent() {
-    if (this.props.faskes.open) {
-      return this.props.faskes.dataFaskes.data.map((result) => {
-        let longlat = result.location.latitude + ',' + result.location.longitude;
-        return (
-          <Card key={result.id} style={{ flex: 0 }}>
-            <CardItem header>
-              <View>
-                <Text style={styles.nameHospital}>
-                  {result.nama_rsu}
-                  {result.nama_rsk}
-                  {result.nama_Puskesmas}
-                </Text>
-                <Text style={styles.descHospital}>
-                  {result.jenis_rsu}
-                  {result.jenis_rsk}
-                </Text>
-              </View>
-            </CardItem>
-            <CardItem>
-              <Text note style={styles.address}>
-                {result.location.alamat}
-              </Text>
-            </CardItem>
-            <CardItem footer style={styles.footer}>
-              <Left>
-                <Icon name='call' style={styles.phoneIcon} />
-                <Text style={styles.phone}>{result.telepon[0]}</Text>
-              </Left>
-              <Right>
-                <Button onPress={() => {
-                  Linking.openURL('https://www.google.co.id/maps/place/' + longlat);
-                }} title='Get Directions' transparent >
-                  <Icon name='pin' style={styles.pinIcon} />
-                </Button>
-              </Right>
-            </CardItem>
-          </Card>
-        );
+  componentWillReceiveProps(nextProps){
+    if (nextProps.faskes.open) {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(nextProps.faskes.dataFaskes.data)
       });
-    } 
-      
-    return (
-      <View style={{
-        alignItems: 'center'
-      }}>
-        <Text>Loading...</Text>
-      </View>
-    );
-    
+    }
+  }
+
+  backToDashboard(){
+    this.props.faskesReset();
+    NavigationActions.home();
   }
 
   render() {
@@ -110,10 +76,7 @@ class FetchList extends React.Component {
       <Container >
         <Header style={{ backgroundColor: this.state.bgHeader }}>
           <Left>
-            <Button transparent onPress={() => {
-              this.props.faskesReset();              
-              NavigationActions.home();
-            }}>
+            <Button transparent onPress={() => this.backToDashboard() }>
               <Icon name='arrow-back' />
             </Button>
           </Left>
@@ -124,7 +87,18 @@ class FetchList extends React.Component {
         </Header>
 
         <Content padder>
-          {this.loadContent()}
+          {
+            !this.props.faskes.open &&
+            <View style={{
+              alignItems: 'center'
+            }}>
+              <Text>Loading...</Text>
+            </View>
+          }
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData)=><CardFaskes result={rowData} />}
+          />
         </Content>
       </Container>
     );
